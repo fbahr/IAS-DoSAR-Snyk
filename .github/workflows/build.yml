@@ -1,0 +1,37 @@
+# TIMESTAMP: 2024-06-14 17:48:59.273
+name: Push
+on:
+  push:
+    branches:
+      - main
+jobs:
+  security:
+    name: Snyk
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3 #< https://github.com/actions/checkout
+        with:
+          fetch-depth: 0
+      - name: Snyk Code scan
+        # if: hashFiles('.snyk')
+        uses: snyk/actions/php@master #< cf. https://github.com/snyk/actions/tree/master/php
+        continue-on-error: true #< To make sure that SARIF upload gets called
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: code test
+          args: --severity-threshold=low --sarif-file-output=snyk.sarif
+          json: false
+        timeout-minutes: 360 #< maximum acc. to https://docs.github.com/en/actions/learn-github-actions/usage-limits-billing-and-administration#usage-limits
+    # - name: Upload results to GitHub Code Scanning
+    #   if: hashFiles('snyk.sarif')
+    #   uses: github/codeql-action/upload-sarif@v3
+    #   with:
+    #     sarif_file: snyk.sarif
+      - name: Upload report
+        if: hashFiles('snyk.sarif')
+        uses: actions/upload-artifact@v4
+        with:
+          name: snyk.sarif
+          path: snyk.sarif
+          overwrite: true
