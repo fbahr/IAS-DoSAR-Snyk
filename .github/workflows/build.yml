@@ -1,4 +1,4 @@
-# TIMESTAMP: 2024-06-14 18:30:36.826
+# TIMESTAMP: 2024-06-16 11:26:20.579
 name: Push
 on:
   push:
@@ -17,12 +17,12 @@ jobs:
         uses: snyk/actions/php@master #< cf. https://github.com/snyk/actions/tree/master/php
         continue-on-error: true #< To make sure that SARIF upload gets called
         env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}### `.snyk` file, cf. https://docs.snyk.io/manage-risk/prioritize-your-issues/the-.snyk-file
         with:
           command: code test
           args: --severity-threshold=low --sarif-file-output=snyk.sarif
           json: false
-        timeout-minutes: 360 #< maximum acc. to https://docs.github.com/en/actions/learn-github-actions/usage-limits-billing-and-administration#usage-limits
+        timeout-minutes: 359 #< maximum =360 acc. to https://docs.github.com/en/actions/learn-github-actions/usage-limits-billing-and-administration#usage-limits
     # - name: Upload results to GitHub Code Scanning
     #   if: hashFiles('snyk.sarif')
     #   uses: github/codeql-action/upload-sarif@v3
