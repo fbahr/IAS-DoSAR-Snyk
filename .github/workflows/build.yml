@@ -1,4 +1,4 @@
-# TIMESTAMP: 2024-06-17 11:39:22.642
+# TIMESTAMP: 2024-06-17 15:07:39.080
 name: Push
 on:
   push:
@@ -13,11 +13,11 @@ jobs:
         with:
           fetch-depth: 0
       - name: Snyk Code scan
-        # if: hashFiles('.snyk')
+        # if: hashFiles('.snyk') #< cf. https://docs.snyk.io/manage-risk/prioritize-your-issues/the-.snyk-file
         uses: snyk/actions/php@master #< cf. https://github.com/snyk/actions/tree/master/php
         continue-on-error: true #< To make sure that SARIF upload gets called
         env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}### `.snyk` file, cf. https://docs.snyk.io/manage-risk/prioritize-your-issues/the-.snyk-file
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: code test
           args: --severity-threshold=low --sarif-file-output=snyk.sarif
